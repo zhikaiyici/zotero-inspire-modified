@@ -1,15 +1,15 @@
 {
-  "name": "zotero-inspire-dev",
+  "name": "zotero-inspire-dev-modified",
   "version": "0.3.7",
   "description": "Inspire Metadata Updater",
   "config": {
-    "addonName": "zotero-inspire-dev",
-    "addonID": "zoteroinspire@itp.ac.cn",
-    "addonRef": "zoteroinspire",
-    "addonInstance": "ZoteroInspire",
-    "prefsPrefix": "extensions.zotero.inspiremeta",
-    "releasepage": "https://github.com/fkguo/zotero-inspire",
-    "updaterdf": "https://raw.githubusercontent.com/fkguo/zotero-inspire/dev/update.json"
+    "addonName": "zotero-inspire-dev-modified",
+    "addonID": "zoteroinspire@ciae.ac.cn",
+    "addonRef": "zoteroinspiremodified",
+    "addonInstance": "ZoteroInspireModified",
+    "prefsPrefix": "extensions.zotero.inspiremeta.modified",
+    "releasepage": "https://127.0.0.1",
+    "updaterdf": "https://127.0.0.1"
   },
   "main": "src/index.ts",
   "scripts": {

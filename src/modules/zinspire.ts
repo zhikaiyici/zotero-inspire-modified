@@ -216,10 +216,10 @@ export class ZInspire {
               this.counter + " items.");
           } else if (operation === "citations") {
             this.progressWindow.ItemProgress.setText(
-               "INSPIRE citations updated for " +
-                        this.counter + " items;\n" + 
-                        "CrossRef citations updated for " +
-                        this.CrossRefcounter + " items.");
+              "INSPIRE citations updated for " +
+              this.counter + " items;\n" +
+              "CrossRef citations updated for " +
+              this.CrossRefcounter + " items.");
           }
           this.progressWindow.show();
           this.progressWindow.startCloseTimer(4000);
@@ -312,16 +312,16 @@ export class ZInspire {
       // await removeArxivNote(item)
 
       const metaInspire = await getInspireMeta(item, operation);
-        // Zotero.debug(`updateItem metaInspire: ${metaInspire}`);
+      // Zotero.debug(`updateItem metaInspire: ${metaInspire}`);
       if (metaInspire !== -1 && metaInspire.recid !== undefined) {
         if (item.hasTag(getPref("tag_norecid") as string)) {
           item.removeTag(getPref("tag_norecid") as string);
           item.saveTx();
         }
         // if (metaInspire.journalAbbreviation && (item.itemType === 'report' || item.itemType === 'preprint')) {
-        if (item.itemType === 'report' || item.itemType === 'preprint') {
+        /*if (item.itemType === 'report' || item.itemType === 'preprint') {
           item.setType(Zotero.ItemTypes.getID('journalArticle') as number);
-        }
+        }*/
 
         if (item.itemType !== 'book' && metaInspire.document_type == 'book') item.setType(Zotero.ItemTypes.getID('book') as number);
 
@@ -488,7 +488,7 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
           metaInspire.date = pubinfo_first.year;
           metaInspire.issue = pubinfo_first.journal_issue
         };
-      
+
         // for erratum, added by FK Guo, date: 2023-08-27
         // support multiple errata
         const pubinfoLength = publication_info.length
@@ -508,7 +508,7 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
               errNotes[i - 1] = `Erratum: ${jAbbrev} ${pubinfo_next.journal_volume}, ${pagesErr} (${pubinfo_next.year})`
             }
             // add additional publication information in LaTeX-EU format, if any, as a note; FKG, date: 2023-10-20
-            else if (pubinfo_next.journal_title && (pubinfo_next.page_start || pubinfo_next.artid) ) {
+            else if (pubinfo_next.journal_title && (pubinfo_next.page_start || pubinfo_next.artid)) {
               let pages_next = ""
               if (pubinfo_next.page_start) {
                 pages_next = pubinfo_next.page_start
@@ -519,9 +519,9 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
                 pages_next = pubinfo_next.artid
               }
               errNotes[i - 1] = `${pubinfo_next.journal_title}  ${pubinfo_next.journal_volume} (${pubinfo_next.year}) ${pages_next}`
-            } 
+            }
             if (pubinfo_next.pubinfo_freetext) {
-              errNotes[i - 1] = pubinfo_next.pubinfo_freetext 
+              errNotes[i - 1] = pubinfo_next.pubinfo_freetext
             }
             //
           }
@@ -582,7 +582,7 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
         const authorCount = meta['author_count'] || metaAuthors.length;
         let maxAuthorCount = authorCount;
         // keep only 3 authors if there are more than 10
-        if (authorCount > 10) (maxAuthorCount = 3);
+        // if (authorCount > 10) (maxAuthorCount = 3);
 
         const authorName = ["", ""]
         if (metaAuthors) {
@@ -597,12 +597,12 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
           }
         }
 
-        if (authorCount > 10) {
+        /*if (authorCount > 10) {
           creators.push({
             name: 'others',
             creatorType: 'author'
           })
-        }
+        }*/
       } else if (metaCol) {
         for (let i = 0; i < metaCol.length; i++) {
           creators[i] = {
@@ -701,7 +701,7 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
           item.setField('journalAbbreviation', metaInspire.journalAbbreviation);
           // no matter whether there is journal title, always set journalAbbreviation to publicationTitle
           // (!item.getField("publicationTitle")) && 
-          item.setField("publicationTitle", metaInspire.journalAbbreviation);
+          // item.setField("publicationTitle", metaInspire.journalAbbreviation);
         } else if (metaInspire.document_type[0] === "book" && item.itemType === "book") {
           item.setField('series', metaInspire.journalAbbreviation)
         } else {
