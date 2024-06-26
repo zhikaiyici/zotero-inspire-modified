@@ -712,7 +712,8 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
       if (metaInspire.volume) {
         (metaInspire.document_type[0] == "book") ? item.setField('seriesNumber', metaInspire.volume) : item.setField('volume', metaInspire.volume);
       }
-      if (metaInspire.pages && (metaInspire.document_type[0] !== "book")) item.setField('pages', metaInspire.pages);
+      // Set pages if there is no one. 2024-6-26 by zhikaiyici
+      if ((!item.getField("pages")) && metaInspire.pages && (metaInspire.document_type[0] !== "book")) item.setField('pages', metaInspire.pages);
       metaInspire.date && item.setField('date', metaInspire.date);
       metaInspire.issue && item.setField('issue', metaInspire.issue);
       if (metaInspire.DOI) {

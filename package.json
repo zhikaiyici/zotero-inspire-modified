@@ -1,9 +1,9 @@
 {
-  "name": "zotero-inspire-dev-modified",
-  "version": "99.3.7",
+  "name": "zotero-inspire-modified",
+  "version": "99.3.8",
   "description": "Inspire Metadata Updater",
   "config": {
-    "addonName": "zotero-inspire-dev-modified",
+    "addonName": "zotero-inspire-modified",
     "addonID": "zoteroinspire@ciae.ac.cn",
     "addonRef": "zoteroinspiremodified",
     "addonInstance": "ZoteroInspireModified",
