@@ -582,7 +582,7 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
         const authorCount = meta['author_count'] || metaAuthors.length;
         let maxAuthorCount = authorCount;
         // keep only 3 authors if there are more than 10
-        // if (authorCount > 10) (maxAuthorCount = 3);
+        // if (authorCount > 10) (maxAuthorCount = 3); //commented by zhikaiyici
 
         const authorName = ["", ""]
         if (metaAuthors) {
@@ -700,8 +700,8 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
         if (item.itemType === "journalArticle") { //metaInspire.document_type[0]  === "article"
           item.setField('journalAbbreviation', metaInspire.journalAbbreviation);
           // no matter whether there is journal title, always set journalAbbreviation to publicationTitle
-          // (!item.getField("publicationTitle")) && 
-          // item.setField("publicationTitle", metaInspire.journalAbbreviation);
+          // (!item.getField("publicationTitle")) &&
+          // item.setField("publicationTitle", metaInspire.journalAbbreviation);  // commented by zhikaiyici
         } else if (metaInspire.document_type[0] === "book" && item.itemType === "book") {
           item.setField('series', metaInspire.journalAbbreviation)
         } else {
@@ -710,18 +710,23 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
       }
       // to avoid setting undefined to zotero items
       if (metaInspire.volume) {
-        (metaInspire.document_type[0] == "book") ? item.setField('seriesNumber', metaInspire.volume) : item.setField('volume', metaInspire.volume);
+        // Set volume if there is none. 2024-7-8 by zhikaiyici
+        (metaInspire.document_type[0] == "book") ?
+          !item.getField("seriesNumber") && item.setField('seriesNumber', metaInspire.volume) : !item.getField("volume") && item.setField('volume', metaInspire.volume);
       }
-      // Set pages if there is no one. 2024-6-26 by zhikaiyici
+      // Set pages if there is none. 2024-6-26 by zhikaiyici
       if ((!item.getField("pages")) && metaInspire.pages && (metaInspire.document_type[0] !== "book")) item.setField('pages', metaInspire.pages);
-      metaInspire.date && item.setField('date', metaInspire.date);
-      metaInspire.issue && item.setField('issue', metaInspire.issue);
-      if (metaInspire.DOI) {
+      // Set date/issue if there is none. 2024-7-8 by zhikaiyici
+      !item.getField('date') && metaInspire.date && item.setField('date', metaInspire.date);
+      !item.getField('issue') && metaInspire.issue && item.setField('issue', metaInspire.issue);
+      // Set DOI if there is none. 2024-7-8 by zhikaiyici
+      if (!item.getField("DOI") && metaInspire.DOI) {
         // if (metaInspire.document_type[0] === "book") {
         if (item.itemType === 'journalArticle' || item.itemType === 'preprint') {
           item.setField('DOI', metaInspire.DOI);
         } else {
-          item.setField('url', "https://doi.org/" + metaInspire.DOI)
+          // Set url if there is none. 2024-7-8 by zhikaiyici
+          !item.getField("url") && item.setField('url', "https://doi.org/" + metaInspire.DOI)
         }
       }
 
