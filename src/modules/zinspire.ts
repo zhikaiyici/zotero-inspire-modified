@@ -703,9 +703,11 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
           // (!item.getField("publicationTitle")) &&
           // item.setField("publicationTitle", metaInspire.journalAbbreviation);  // commented by zhikaiyici
         } else if (metaInspire.document_type[0] === "book" && item.itemType === "book") {
-          item.setField('series', metaInspire.journalAbbreviation)
+          // Set series if there is none. 2024-8-5 by zhikaiyici
+          !item.getField("series") && item.setField('series', metaInspire.journalAbbreviation)
         } else {
-          item.setField('publicationTitle', metaInspire.journalAbbreviation)
+          // Set publicationTitle if there is none. 2024-8-5 by zhikaiyici
+          !item.getField("publicationTitle") && item.setField('publicationTitle', metaInspire.journalAbbreviation)
         }
       }
       // to avoid setting undefined to zotero items

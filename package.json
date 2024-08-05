@@ -1,6 +1,6 @@
 {
   "name": "zotero-inspire-modified",
-  "version": "99.3.8",
+  "version": "99.3.8.2",
   "description": "Inspire Metadata Updater",
   "config": {
     "addonName": "zotero-inspire-modified",
