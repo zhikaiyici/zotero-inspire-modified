@@ -183,7 +183,7 @@ export class ZInspire {
         this.progressWindow.close();
         const icon = "chrome://zotero/skin/cross.png";
         if (this.error_norecid && !this.error_norecid_shown) {
-            //ztoolkit.log("hello");
+          //ztoolkit.log("hello");
           const progressWindowNoRecid = new ztoolkit.ProgressWindow(config.addonName, { closeOnClick: true });
           progressWindowNoRecid.changeHeadline("INSPIRE recid not found");
           if (getPref("tag_enable") && getPref("tag_norecid") !== "") {
@@ -191,7 +191,7 @@ export class ZInspire {
             progressWindowNoRecid.createLine({ icon: icon, text: "No INSPIRE recid was found for some items. These have been tagged with '" + getPref("tag_norecid") + "'." });
           } else {
             // progressWindowNoRecid.ItemProgress.setText("No INSPIRE recid was found for some items.")
-            progressWindowNoRecid.createLine({icon: icon, text: "No INSPIRE recid was found for some items."});
+            progressWindowNoRecid.createLine({ icon: icon, text: "No INSPIRE recid was found for some items." });
           }
           progressWindowNoRecid.show();
           progressWindowNoRecid.startCloseTimer(8000);
@@ -318,12 +318,12 @@ export class ZInspire {
           item.removeTag(getPref("tag_norecid") as string);
           item.saveTx();
         }
-        // if (metaInspire.journalAbbreviation && (item.itemType === 'report' || item.itemType === 'preprint')) {
-        if (item.itemType === 'report' || item.itemType === 'preprint') {
-          item.setType(Zotero.ItemTypes.getID('journalArticle') as number);
-        }
+        // // if (metaInspire.journalAbbreviation && (item.itemType === 'report' || item.itemType === 'preprint')) {
+        // if (item.itemType === 'report' || item.itemType === 'preprint') {
+        //   item.setType(Zotero.ItemTypes.getID('journalArticle') as number);
+        // }
 
-        if (item.itemType !== 'book' && metaInspire.document_type == 'book') item.setType(Zotero.ItemTypes.getID('book') as number);
+        // if (item.itemType !== 'book' && metaInspire.document_type == 'book') item.setType(Zotero.ItemTypes.getID('book') as number);
 
         await setInspireMeta(item, metaInspire, operation);
         item.saveTx();
@@ -446,7 +446,7 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
   }
 
   const t1 = performance.now();
-  Zotero.debug(`Fetching INSPIRE meta took ${t1 - t0} milliseconds.`)
+  // Zotero.debug(`Fetching INSPIRE meta took ${t1 - t0} milliseconds.`)
 
   try {
     const meta = (() => {
@@ -585,8 +585,8 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
       if (metaAuthors) {
         const authorCount = meta['author_count'] || metaAuthors.length;
         let maxAuthorCount = authorCount;
-        // keep only 3 authors if there are more than 10
-        if (authorCount > 10) (maxAuthorCount = 3);
+        // // keep only 3 authors if there are more than 10
+        // if (authorCount > 10) (maxAuthorCount = 3);
 
         const authorName = ["", ""]
         if (metaAuthors) {
@@ -601,12 +601,12 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
           }
         }
 
-        if (authorCount > 10) {
-          creators.push({
-            name: 'others',
-            creatorType: 'author'
-          })
-        }
+        // if (authorCount > 10) {
+        //   creators.push({
+        //     name: 'others',
+        //     creatorType: 'author'
+        //   })
+        // }
       } else if (metaCol) {
         for (let i = 0; i < metaCol.length; i++) {
           creators[i] = {
@@ -619,7 +619,7 @@ async function getInspireMeta(item: Zotero.Item, operation: string) {
       metaInspire.creators = creators
 
       const t2 = performance.now();
-      Zotero.debug(`Assigning meta took ${t2 - t1} milliseconds.`)
+      // Zotero.debug(`Assigning meta took ${t2 - t1} milliseconds.`)
     }
   } catch (err) {
     // Zotero.debug('getInspireMeta-err: Not found in INSPIRE')
@@ -704,24 +704,31 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
         if (item.itemType === "journalArticle") { //metaInspire.document_type[0]  === "article"
           item.setField('journalAbbreviation', metaInspire.journalAbbreviation);
         } else if (metaInspire.document_type[0] === "book" && item.itemType === "book") {
-          item.setField('series', metaInspire.journalAbbreviation)
+          // Set series if there is none. 2025-2-6 by zhikaiyici
+          !item.getField("series") && item.setField('series', metaInspire.journalAbbreviation)
         } else {
-          item.setField('publicationTitle', metaInspire.journalAbbreviation)
+          // Set publicationTitle if there is none. 2025-2-6 by zhikaiyici
+          !item.getField("publicationTitle") && item.setField('publicationTitle', metaInspire.journalAbbreviation)
         }
       }
       // to avoid setting undefined to zotero items
       if (metaInspire.volume) {
-        (metaInspire.document_type[0] == "book") ? item.setField('seriesNumber', metaInspire.volume) : item.setField('volume', metaInspire.volume);
+        // Set volume if there is none. 2025-2-6 by zhikaiyici
+        (metaInspire.document_type[0] == "book") ? !item.getField("seriesNumber") && item.setField('seriesNumber', metaInspire.volume) : !item.getField("volume") && item.setField('volume', metaInspire.volume);
       }
-      if (metaInspire.pages && (metaInspire.document_type[0] !== "book")) item.setField('pages', metaInspire.pages);
-      metaInspire.date && item.setField('date', metaInspire.date);
-      metaInspire.issue && item.setField('issue', metaInspire.issue);
+      // Set pages if there is none. 2025-2-6 by zhikaiyici
+      if (!item.getField("pages") && metaInspire.pages && (metaInspire.document_type[0] !== "book")) item.setField('pages', metaInspire.pages);
+      // Set date/issue if there is none. 2025-2-6 by zhikaiyici
+      !item.getField("date") && metaInspire.date && item.setField('date', metaInspire.date);
+      !item.getField("issue") && metaInspire.issue && item.setField('issue', metaInspire.issue);
       if (metaInspire.DOI) {
         // if (metaInspire.document_type[0] === "book") {
         if (item.itemType === 'journalArticle' || item.itemType === 'preprint') {
-          item.setField('DOI', metaInspire.DOI);
+          // Set doi if there is none. 2025-2-6 by zhikaiyici
+          !item.getField("DOI") && item.setField('DOI', metaInspire.DOI);
         } else {
-          item.setField('url', "https://doi.org/" + metaInspire.DOI)
+          // Set url if there is none. 2025-2-6 by zhikaiyici
+          !item.getField("url") && item.setField('url', "https://doi.org/" + metaInspire.DOI)
         }
       }
 
