@@ -674,7 +674,7 @@ async function getCrossrefCount(item: Zotero.Item) {
 
 
   const t1 = performance.now();
-  Zotero.debug(`Fetching CrossRef meta took ${t1 - t0} milliseconds.`)
+  // Zotero.debug(`Fetching CrossRef meta took ${t1 - t0} milliseconds.`)
 
   let str = null;
   try {
@@ -737,7 +737,7 @@ async function setInspireMeta(item: Zotero.Item, metaInspire: jsobject, operatio
 
       /* set the title and creators if there are none */
       !item.getField('title') && item.setField('title', metaInspire.title)
-      if (!item.getCreator(0) || !(item.getCreator(0) as _ZoteroTypes.Item.Creator).firstName) item.setCreators(metaInspire.creators)
+      if (!item.getCreator(0)) item.setCreators(metaInspire.creators)
 
       // The current arXiv.org Zotero translator put all cross-listed categories after the ID, and the primary category is not the first. Here we replace that list by only the primary one.
       // set the arXiv url, useful to use Find Available PDF for newly added arXiv papers
